@@ -6,11 +6,11 @@
 
 class PhysBody;
 
-class ModuleSceneIntro : public Module
+class ModuleScenePinball : public Module
 {
 public:
-	ModuleSceneIntro(Application* app, bool start_enabled = true);
-	~ModuleSceneIntro();
+	ModuleScenePinball(Application* app, bool start_enabled = true);
+	~ModuleScenePinball();
 
 	bool Start();
 	update_status Update();
@@ -22,12 +22,19 @@ public:
 	p2List<PhysBody*> boxes;
 	p2List<PhysBody*> ricks;
 
+	p2List<PhysBody*> balls;
+
 	PhysBody* sensor;
 	bool sensed;
 
 	SDL_Texture* circle;
 	SDL_Texture* box;
 	SDL_Texture* rick;
+
+	SDL_Texture* ball;
+	SDL_Texture* background;
+
+
 	uint bonus_fx;
 	p2Point<int> ray;
 	bool ray_on;

@@ -1,34 +1,40 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRender.h"
-#include "ModuleSceneIntro.h"
+#include "ModuleScenePinball.h"
 #include "ModuleInput.h"
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
 
-ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
+ModuleScenePinball::ModuleScenePinball(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	circle = box = rick = NULL;
 	ray_on = false;
 	sensed = false;
 }
 
-ModuleSceneIntro::~ModuleSceneIntro()
+ModuleScenePinball::~ModuleScenePinball()
 {}
 
 // Load assets
-bool ModuleSceneIntro::Start()
+bool ModuleScenePinball::Start()
 {
 	LOG("Loading Intro assets");
 	bool ret = true;
 
-	App->renderer->camera.x = App->renderer->camera.y = 0;
+	App->renderer->camera.x =  0;
+	App->renderer->camera.y = -673; //Magic number
+	
+	
+	//circle = App->textures->Load("pinball/wheel.png"); 
+	//box = App->textures->Load("pinball/crate.png");
+	//rick = App->textures->Load("pinball/rick_head.png");
+	//bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 
-	circle = App->textures->Load("pinball/wheel.png"); 
-	box = App->textures->Load("pinball/crate.png");
-	rick = App->textures->Load("pinball/rick_head.png");
-	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
+	background = App->textures->Load("pinball/background.png");
+	ball = App->textures->Load("pinball/ball.png");
+
 
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 
@@ -36,7 +42,7 @@ bool ModuleSceneIntro::Start()
 }
 
 // Load assets
-bool ModuleSceneIntro::CleanUp()
+bool ModuleScenePinball::CleanUp()
 {
 	LOG("Unloading Intro scene");
 
@@ -44,7 +50,7 @@ bool ModuleSceneIntro::CleanUp()
 }
 
 // Update: draw background
-update_status ModuleSceneIntro::Update()
+update_status ModuleScenePinball::Update()
 {
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
@@ -55,8 +61,13 @@ update_status ModuleSceneIntro::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
-		circles.getLast()->data->listener = this;
+		//circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
+		//circles.getLast()->data->listener = this;
+
+
+
+		balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 15));
+		balls.getLast()->data->listener = this;
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
@@ -115,45 +126,46 @@ update_status ModuleSceneIntro::Update()
 	fVector normal(0.0f, 0.0f);
 
 	// All draw functions ------------------------------------------------------
-	p2List_item<PhysBody*>* c = circles.getFirst();
+	//p2List_item<PhysBody*>* b = circles.getFirst();
+	p2List_item<PhysBody*>* b = balls.getFirst();
 
-	while(c != NULL)
+	while(b != NULL)
 	{
 		int x, y;
-		c->data->GetPosition(x, y);
-		if(c->data->Contains(App->input->GetMouseX(), App->input->GetMouseY()))
-			App->renderer->Blit(circle, x, y, NULL, 1.0f, c->data->GetRotation());
-		c = c->next;
+		b->data->GetPosition(x, y);
+		if(b->data->Contains(App->input->GetMouseX(), App->input->GetMouseY()))
+			App->renderer->Blit(ball, x, y, NULL, 1.0f, b->data->GetRotation());
+		b = b->next;
 	}
 
-	c = boxes.getFirst();
+	b = boxes.getFirst();
 
-	while(c != NULL)
+	while(b != NULL)
 	{
 		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(box, x, y, NULL, 1.0f, c->data->GetRotation());
+		b->data->GetPosition(x, y);
+		App->renderer->Blit(box, x, y, NULL, 1.0f, b->data->GetRotation());
 		if(ray_on)
 		{
-			int hit = c->data->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);
+			int hit = b->data->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);
 			if(hit >= 0)
 				ray_hit = hit;
 		}
-		c = c->next;
+		b = b->next;
 	}
 
-	c = ricks.getFirst();
+	b = ricks.getFirst();
 
-	while(c != NULL)
+	while(b != NULL)
 	{
 		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(rick, x, y, NULL, 1.0f, c->data->GetRotation());
-		c = c->next;
+		b->data->GetPosition(x, y);
+		App->renderer->Blit(rick, x, y, NULL, 1.0f, b->data->GetRotation());
+		b = b->next;
 	}
 
 	// ray -----------------
-	if(ray_on == true)
+	/*if(ray_on == true)
 	{
 		fVector destination(mouse.x-ray.x, mouse.y-ray.y);
 		destination.Normalize();
@@ -163,12 +175,13 @@ update_status ModuleSceneIntro::Update()
 
 		if(normal.x != 0.0f)
 			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
-	}
+	}*/
+	App->renderer->Blit(background, 0, 0);
 
 	return UPDATE_CONTINUE;
 }
 
-void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
+void ModuleScenePinball::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	int x, y;
 
