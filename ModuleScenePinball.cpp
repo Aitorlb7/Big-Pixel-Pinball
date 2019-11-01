@@ -64,8 +64,6 @@ update_status ModuleScenePinball::Update()
 		//circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
 		//circles.getLast()->data->listener = this;
 
-
-
 		balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 15));
 		balls.getLast()->data->listener = this;
 	}
@@ -165,7 +163,7 @@ update_status ModuleScenePinball::Update()
 	}
 
 	// ray -----------------
-	/*if(ray_on == true)
+	if(ray_on == true)
 	{
 		fVector destination(mouse.x-ray.x, mouse.y-ray.y);
 		destination.Normalize();
@@ -175,7 +173,7 @@ update_status ModuleScenePinball::Update()
 
 		if(normal.x != 0.0f)
 			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
-	}*/
+	}
 	App->renderer->Blit(background, 0, 0);
 
 	return UPDATE_CONTINUE;
