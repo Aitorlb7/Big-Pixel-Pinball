@@ -12,6 +12,8 @@ class ModuleAudio;
 class ModulePlayer;
 class ModuleScenePinball;
 class ModulePhysics;
+class ModuleFonts;
+class ModuleUI;
 
 class Application
 {
@@ -24,6 +26,8 @@ public:
 	ModulePlayer* player;
 	ModuleScenePinball* scene_pinball;
 	ModulePhysics* physics;
+	ModuleFonts* fonts;
+	ModuleUI* UI;
 
 private:
 

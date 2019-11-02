@@ -8,8 +8,10 @@
 #include "ModulePlayer.h"
 #include "ModulePhysics.h"
 #include "ModuleScenePinball.h"
-
+#include "ModuleFonts.h"
+#include "ModuleUI.h"
 #include "Application.h"
+
 
 Application::Application()
 {
@@ -21,6 +23,8 @@ Application::Application()
 	player = new ModulePlayer(this);
 	scene_pinball = new ModuleScenePinball(this);
 	physics = new ModulePhysics(this);
+	fonts = new ModuleFonts(this);
+	UI = new ModuleUI(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -33,6 +37,8 @@ Application::Application()
 	AddModule(textures);
 	AddModule(input);
 	AddModule(audio);
+	AddModule(fonts);
+	AddModule(UI);
 	
 	// Scenes
 	AddModule(scene_pinball);
