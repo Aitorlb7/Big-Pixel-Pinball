@@ -30,6 +30,7 @@ update_status ModuleUI::Update()
 	//App->renderer->DrawQuad({ 0, y, 630, 40 }, 0, 0, 0, 255, true, true);
 	App->renderer->Blit(graphics, 0, y, &Banner);
 	App->fonts->BlitText(5, y + 23, 0, std::to_string(score).c_str());
+	App->fonts->BlitText(540, y + 23, 0, std::to_string(num_balls).c_str());
 	return UPDATE_CONTINUE;
 }
 

@@ -21,7 +21,7 @@ public:
 	int font_start = -1;
 
 	int score = 0;
-	uint score_text = 0000000;
+	int num_balls = 3;
 
 	int y;
 
