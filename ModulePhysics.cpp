@@ -397,5 +397,17 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 
 		App->scene_pinball->green_sensed = true;
 	}
+	if (physA == App->scene_pinball->sensor_pink) {
+
+		App->scene_pinball->pink_sensed = true;
+	}
+	if (physA == App->scene_pinball->sensor_red) {
+
+		App->scene_pinball->red_sensed = true;
+	}
+	if (physA == App->scene_pinball->sensor_yellow) {
+
+		App->scene_pinball->yellow_sensed = true;
+	}
 
 }

@@ -143,7 +143,6 @@ update_status ModuleScenePinball::Update()
 	//CAMERA--------------------------
 	
 	ball->GetPosition(ball_x, ball_y);
-	App->renderer->Blit(ball_tex, ball_x, ball_y, NULL, 1.0f);
 
 	App->renderer->camera.y = -ball_y + (App->renderer->camera.h / 2);
 	if (App->renderer->camera.y < -673)
@@ -166,13 +165,15 @@ update_status ModuleScenePinball::Update()
 
 
 	if(blit_blue)
-	App->renderer->Blit(sensor_blue_tex, 204, 880);
+		App->renderer->Blit(sensor_blue_tex, 204, 880);
 
 	if (blit_green)
-		App->renderer->Blit(sensor_green_tex, 204, 880);
+		App->renderer->Blit(sensor_green_tex, 338, 880);
 
 	if (blit_orange)
-		App->renderer->Blit(sensor_orange_tex, 204, 880);
+		App->renderer->Blit(sensor_orange_tex, 271, 1004);
+
+	App->renderer->Blit(ball_tex, ball_x, ball_y, NULL, 1.0f);
 
 	return UPDATE_CONTINUE;
 }

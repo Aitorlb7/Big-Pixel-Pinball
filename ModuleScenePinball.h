@@ -41,15 +41,24 @@ public:
 
 	PhysBody* sensor_blue;
 	PhysBody* sensor_orange;
-	PhysBody* sensor_green;
+	PhysBody* sensor_green;	
+	PhysBody* sensor_red;
+	PhysBody* sensor_pink;
+	PhysBody* sensor_yellow;
 
 	bool blue_sensed;
 	bool green_sensed;
 	bool orange_sensed;
+	bool pink_sensed;
+	bool red_sensed;
+	bool yellow_sensed;
 
 	bool blit_blue;
 	bool blit_green;
 	bool blit_orange;
+	bool blit_pink;
+	bool blit_red;
+	bool blit_yellow;
 
 
 
@@ -77,9 +86,10 @@ public:
 	SDL_Texture* spring_tex;
 	SDL_Texture* sensor_blue_tex;
 	SDL_Texture* sensor_orange_tex;
-	SDL_Texture* sensor_green_tex;
-
-
+	SDL_Texture* sensor_green_tex;	
+	SDL_Texture* sensor_pink_tex;
+	SDL_Texture* sensor_red_tex;
+	SDL_Texture* sensor_yellow_tex;
 
 	uint bonus_fx;
 	uint Soundtrack;
@@ -275,5 +285,5 @@ public:
     497, 418,
     502, 405,
     508, 397
-};
+	};
 };
