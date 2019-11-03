@@ -30,6 +30,8 @@ public:
 
 	int x = 0;
 	int y = 0;
+	int x100 = 0;
+	int y100 = 0;
 	int spring_y = 1023;
 	int ball_x = 0;
 	int ball_y = 0;
