@@ -16,7 +16,8 @@ public:
 	bool CleanUp();
 
 public:
-	SDL_Rect BlackRect;
+	SDL_Rect printFont;
+	SDL_Rect Fontrect;
 
 	int font_start = -1;
 

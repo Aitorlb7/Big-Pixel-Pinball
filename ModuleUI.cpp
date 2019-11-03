@@ -7,6 +7,7 @@
 #include "ModuleFonts.h"
 #include "ModulePlayer.h"
 #include "SDL/include/SDL.h"
+#include <string>
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -25,8 +26,9 @@ bool ModuleUI::Start()
 }
 update_status ModuleUI::Update()
 {
-	App->fonts->BlitText(0, 0, font_start, "09876");	
-	App->renderer->DrawQuad({ 0, 0, 600, 40 }, 0, 0, 0, 0, true, true);
+	score = 1234;
+	App->renderer->DrawQuad({ 0, 0, 630, 40 }, 0, 0, 0, 255, true, true);
+	App->fonts->BlitText(0, 0, 0, std::to_string(score).c_str());
 	return UPDATE_CONTINUE;
 }
 
