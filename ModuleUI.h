@@ -16,13 +16,14 @@ public:
 	bool CleanUp();
 
 public:
-	SDL_Rect printFont;
-	SDL_Rect Fontrect;
+	SDL_Rect Banner;
 
 	int font_start = -1;
 
 	int score = 0;
 	uint score_text = 0000000;
+
+	int y;
 
 	SDL_Texture* graphics = nullptr;
 
