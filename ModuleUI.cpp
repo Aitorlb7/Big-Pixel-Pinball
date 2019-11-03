@@ -7,26 +7,29 @@
 #include "ModuleFonts.h"
 #include "ModulePlayer.h"
 #include "SDL/include/SDL.h"
+#include <string>
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 }
 ModuleUI::~ModuleUI()
 {
-
 }
 bool ModuleUI::Start()
 {
 	LOG("Loading UI textures");
-	graphics = App->textures->Load("Textures/Assets_pinball.png");
+	graphics = App->textures->Load("Textures/Assets_Pinball.png");
 	font_start = App->fonts->Load("Textures/Font.png", "0123456789", 1);
-
 	return true;
 }
 update_status ModuleUI::Update()
 {
-	App->fonts->BlitText(0, 0, font_start, "09876");	
-	App->renderer->DrawQuad({ 0, 0, 600, 40 }, 0, 0, 0, 0, true, true);
+	y = -App->renderer->camera.y;
+	score = 999999;
+	Banner = { 0,479,630,48 };
+	//App->renderer->DrawQuad({ 0, y, 630, 40 }, 0, 0, 0, 255, true, true);
+	App->renderer->Blit(graphics, 0, y, &Banner);
+	App->fonts->BlitText(5, y + 23, 0, std::to_string(score).c_str());
 	return UPDATE_CONTINUE;
 }
 

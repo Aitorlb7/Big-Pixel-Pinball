@@ -38,13 +38,16 @@ Application::Application()
 	AddModule(input);
 	AddModule(audio);
 	AddModule(fonts);
-	AddModule(UI);
 	
 	// Scenes
 	AddModule(scene_pinball);
+
 	
 	// Player
 	AddModule(player);
+
+	//UI
+	AddModule(UI);
 }
 
 Application::~Application()
