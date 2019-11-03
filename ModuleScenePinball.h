@@ -35,6 +35,12 @@ public:
 	p2List<PhysBody*> boxes;
 	p2List<PhysBody*> chains;
 
+	PhysBody* sensor_blue;
+	PhysBody* sensor_orange;
+	PhysBody* sensor_green;
+
+
+
 	PhysBody* ball;
 	PhysBody* spring;
 	PhysBody* left_flipper_joint;

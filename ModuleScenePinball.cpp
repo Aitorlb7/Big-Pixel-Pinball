@@ -43,13 +43,16 @@ bool ModuleScenePinball::Start()
 	flipper_left_tex = App->textures->Load("Textures/Flipper_Left.png");
 	spring_tex = App->textures->Load("Textures/Spring.png");
 
-
-
-	Soundtrack = App->audio->LoadFx("Audio/MainTheme.wav");
+	App->audio->PlayMusic("Audio/MainTheme.wav", -1.0f);
 	launcher_fx = App->audio->LoadFx("Audio/Launcher_fx.wav");
 	flipper_fx = App->audio->LoadFx("Audio/Flipper_fx.wav");
 
-	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
+
+	sensor_blue = App->physics->CreateRectangleSensor(237, 913, 60, 60);
+	sensor_orange = App->physics->CreateRectangleSensor(310, 1035, 60, 60);
+	sensor_green = App->physics->CreateRectangleSensor(380, 913, 60, 60);
+
+	
 
 	return ret;
 }
@@ -170,7 +173,7 @@ update_status ModuleScenePinball::Update()
 	flipper_right_body->GetPosition(x, y);
 	App->renderer->Blit(flipper_right_tex, x, y, NULL, 1.0f, flipper_right_body->GetRotation(), 0, 0);
 
-	App->audio->PlayMusic("Audio/MainTheme.wav", -1.0f);
+
 	return UPDATE_CONTINUE;
 }
 

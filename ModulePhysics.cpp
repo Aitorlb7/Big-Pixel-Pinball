@@ -5,6 +5,8 @@
 #include "ModulePhysics.h"
 #include "p2Point.h"
 #include "math.h"
+#include "ModuleScenePinball.h"
+#include "ModuleUI.h"
 
 #ifdef _DEBUG
 #pragma comment( lib, "Box2D/libx86/Debug/Box2D.lib" )
@@ -382,4 +384,18 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 
 	if(physB && physB->listener != NULL)
 		physB->listener->OnCollision(physB, physA);
+
+	if (physA == App->scene_pinball->sensor_blue) {
+
+		App->UI->score += 100;
+	}
+	if (physA == App->scene_pinball->sensor_orange) {
+
+		App->UI->score += 100;
+	}
+	if (physA == App->scene_pinball->sensor_green) {
+
+		App->UI->score += 100;
+	}
+
 }
