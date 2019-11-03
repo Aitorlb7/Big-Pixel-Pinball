@@ -32,25 +32,25 @@ update_status ModuleUI::Update()
 {
 	y = -App->renderer->camera.y;
 
-	if (App->input->GetKey(SDL_SCANCODE_U) == KEY_REPEAT) // suma de puntos
-	{
-		score++;
-	}
-	
-	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN)  // en caso de que la bola caiga
-	{
-		if (num_balls == 3)
-		{
-			high_score = score;
-		}
-		num_balls--;
-		prev_score = score;
-		if (score > high_score)
-		{
-			high_score = score;
-		}
-		score = 0;
-	}
+	//if (App->input->GetKey(SDL_SCANCODE_U) == KEY_REPEAT) // suma de puntos 
+	//{
+	//	score++;
+	//}
+	//
+	//if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN)  // en caso de que la bola caiga
+	//{
+	//	if (num_balls == 3)
+	//	{
+	//		high_score = score;
+	//	}
+	//	num_balls--;
+	//	prev_score = score;
+	//	if (score > high_score)
+	//	{
+	//		high_score = score;
+	//	}
+	//	score = 0;
+	//}
 
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) // Reiniciar nivel
 	{
