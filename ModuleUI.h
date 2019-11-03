@@ -17,10 +17,14 @@ public:
 
 public:
 	SDL_Rect Banner;
+	SDL_Rect Scorerect1;
+	SDL_Rect Scorerect2;
 
 	int font_start = -1;
 
 	int score = 0;
+	int high_score = 0;
+	int prev_score = 0;
 	int num_balls = 3;
 
 	int y;
