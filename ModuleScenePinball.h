@@ -21,8 +21,11 @@ public:
 	void Flippers();
 	void Spring();
 	void Ball_respawn();
+	void Sensed();
 
 public:
+	int sensed_timer;
+	
 	int x = 0;
 	int y = 0;
 	int spring_y = 1023;
@@ -31,6 +34,7 @@ public:
 	int numBalls = 0;
 	
 	
+
 	p2List<PhysBody*> circles;
 	p2List<PhysBody*> boxes;
 	p2List<PhysBody*> chains;
@@ -38,6 +42,14 @@ public:
 	PhysBody* sensor_blue;
 	PhysBody* sensor_orange;
 	PhysBody* sensor_green;
+
+	bool blue_sensed;
+	bool green_sensed;
+	bool orange_sensed;
+
+	bool blit_blue;
+	bool blit_green;
+	bool blit_orange;
 
 
 
@@ -52,15 +64,7 @@ public:
 	b2RevoluteJointDef revoluteJointDef_left;
 	b2PrismaticJointDef prismaticJoint_spring;
 
-	
 
-
-	PhysBody* launcher;
-
-	p2List<PhysBody*> balls;
-
-	PhysBody* sensor;
-	bool sensed;
 
 	SDL_Texture* circle;
 	SDL_Texture* box;
@@ -71,6 +75,9 @@ public:
 	SDL_Texture* flipper_right_tex;
 	SDL_Texture* flipper_left_tex;
 	SDL_Texture* spring_tex;
+	SDL_Texture* sensor_blue_tex;
+	SDL_Texture* sensor_orange_tex;
+	SDL_Texture* sensor_green_tex;
 
 
 
@@ -179,15 +186,13 @@ public:
 		408, 981
 	};
 
-	int ShapeL2[12] = {
-		135, 958,
-		129, 885,
-		143, 879,
-		201, 978,
-		192, 987,
-		135, 958
+	int ShapeL2[10] = {
+	133, 957,
+	128, 884,
+	144, 880,
+	202, 976,
+	192, 986
 	};
-
 	int Start_Tube[22] = {
 	565, 1204,
 	564, 876,
@@ -227,4 +232,48 @@ public:
 	125, 700,
 	130, 832
 	};
+	int Circle1[40] = {
+	367, 529,
+	380, 529,
+	390, 533,
+	400, 540,
+	407, 548,
+	410, 556,
+	412, 568,
+	412, 574,
+	410, 583,
+	404, 593,
+	394, 603,
+	381, 608,
+	365, 608,
+	351, 604,
+	340, 595,
+	333, 582,
+	332, 564,
+	337, 548,
+	345, 538,
+	356, 532
+	};
+	int Circle2[40] = {
+    515, 392,
+    527, 387,
+    545, 387,
+    556, 391,
+    565, 398,
+    570, 403,
+    574, 414,
+    576, 425,
+    574, 440,
+    568, 451,
+    558, 461,
+    546, 466,
+    531, 467,
+    517, 463,
+    506, 454,
+    499, 444,
+    496, 433,
+    497, 418,
+    502, 405,
+    508, 397
+};
 };

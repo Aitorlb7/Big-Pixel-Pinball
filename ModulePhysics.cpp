@@ -387,15 +387,15 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 
 	if (physA == App->scene_pinball->sensor_blue) {
 
-		App->UI->score += 100;
+		App->scene_pinball->blue_sensed = true;
 	}
 	if (physA == App->scene_pinball->sensor_orange) {
 
-		App->UI->score += 100;
+		App->scene_pinball->orange_sensed = true;
 	}
 	if (physA == App->scene_pinball->sensor_green) {
 
-		App->UI->score += 100;
+		App->scene_pinball->green_sensed = true;
 	}
 
 }

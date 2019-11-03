@@ -12,7 +12,6 @@ ModuleScenePinball::ModuleScenePinball(Application* app, bool start_enabled) : M
 {
 	circle = box = rick = NULL;
 	ray_on = false;
-	sensed = false;
 }
 
 ModuleScenePinball::~ModuleScenePinball()
@@ -42,6 +41,14 @@ bool ModuleScenePinball::Start()
 	flipper_right_tex = App->textures->Load("Textures/Flipper_Right.png");
 	flipper_left_tex = App->textures->Load("Textures/Flipper_Left.png");
 	spring_tex = App->textures->Load("Textures/Spring.png");
+	sensor_blue_tex = App->textures->Load("Textures/Blue_Active.png");
+	sensor_orange_tex = App->textures->Load("Textures/Orange_Active.png");
+	sensor_green_tex = App->textures->Load("Textures/Green_Active.png");
+	
+
+
+
+
 
 	App->audio->PlayMusic("Audio/MainTheme.wav", -1.0f);
 	launcher_fx = App->audio->LoadFx("Audio/Launcher_fx.wav");
@@ -68,6 +75,8 @@ bool ModuleScenePinball::CleanUp()
 // Update: draw background
 update_status ModuleScenePinball::Update()
 {
+	
+	Sensed();
 	App->renderer->Blit(background, 0, 0);
 	
 	static int force = 0;
@@ -106,30 +115,12 @@ update_status ModuleScenePinball::Update()
 		flipper_left_body->body->ApplyTorque(30, true);
 	}
 
-	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-	{
-		//circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
-		//circles.getLast()->data->listener = this;
-
-		balls.add(App->physics->CreateCircle(592, 845, 15, b2_dynamicBody));
-		balls.getLast()->data->listener = this;
-	}
-
 	// Prepare for raycast ------------------------------------------------------
 	
 
 	// All draw functions ------------------------------------------------------
-	p2List_item<PhysBody*>* b = balls.getFirst();
-
-	//while(b != NULL)
-	//{
-	//	int x, y;
-	//	b->data->GetPosition(x, y);
-	//	App->renderer->Blit(ball_tex, x, y, NULL, 1.0f);
-	//	b = b->next;
-	//}
-
-	b = boxes.getFirst();
+	p2List_item<PhysBody*>* b = boxes.getFirst();
+	
 
 	while(b != NULL)
 	{
@@ -173,6 +164,15 @@ update_status ModuleScenePinball::Update()
 	flipper_right_body->GetPosition(x, y);
 	App->renderer->Blit(flipper_right_tex, x, y, NULL, 1.0f, flipper_right_body->GetRotation(), 0, 0);
 
+
+	if(blit_blue)
+	App->renderer->Blit(sensor_blue_tex, 204, 880);
+
+	if (blit_green)
+		App->renderer->Blit(sensor_green_tex, 204, 880);
+
+	if (blit_orange)
+		App->renderer->Blit(sensor_orange_tex, 204, 880);
 
 	return UPDATE_CONTINUE;
 }
@@ -286,9 +286,11 @@ void ModuleScenePinball::Map_shape()
 	chains.add(App->physics->CreateChain(0, 0, ShapeL1, 12, b2_staticBody));
 	chains.add(App->physics->CreateChain(0, 0, ShapeR1, 12, b2_staticBody));
 	chains.add(App->physics->CreateChain(0, 0, ShapeR2, 12, b2_staticBody));
-	//chains.add(App->physics->CreateChain(0, 0, ShapeL2, 12, b2_staticBody));
+	chains.add(App->physics->CreateChain(0, 0, ShapeL2, 10, b2_staticBody));
 	chains.add(App->physics->CreateChain(0, 0, SpinTube, 48, b2_staticBody));
 	chains.add(App->physics->CreateChain(0, 0, Start_Tube, 22, b2_staticBody));
+	chains.add(App->physics->CreateChain(0, 0, Circle1, 40, b2_staticBody));
+	chains.add(App->physics->CreateChain(0, 0, Circle2, 40, b2_staticBody));
 }
 
 void ModuleScenePinball::Ball_respawn()
@@ -302,6 +304,27 @@ void ModuleScenePinball::Ball_respawn()
 		ball->body->SetLinearVelocity(b2Vec2(0, 0));
 		--App->UI->num_balls;
 		
+	}
+}
+void ModuleScenePinball::Sensed()
+{
+	if (blue_sensed)
+	{
+		App->UI->score += 100;
+		blit_blue = true;
+		blue_sensed = !blue_sensed;
+	}
+	if (green_sensed)
+	{
+		App->UI->score += 100;
+		blit_green = true;
+		green_sensed = !green_sensed;
+	}
+	if (orange_sensed)
+	{
+		App->UI->score += 100;
+		blit_orange = true;
+		orange_sensed = !orange_sensed;
 	}
 }
 
