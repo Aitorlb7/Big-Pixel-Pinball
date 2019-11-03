@@ -177,6 +177,15 @@ update_status ModuleScenePinball::Update()
 
 	if (blit_orange)
 		App->renderer->Blit(sensor_orange_tex, 271, 1004);
+	
+	if (blit_pink)
+		App->renderer->Blit(sensor_pink_tex, 281, 664);	
+	
+	if (blit_red)
+		App->renderer->Blit(sensor_red_tex, 425, 699);	
+	
+	if (blit_yellow)
+		App->renderer->Blit(sensor_yellow_tex, 142, 699);
 
 	y100 -= sensed_timer / 20;
 	if (sensed_timer < 120)
