@@ -17,8 +17,9 @@ https://www.minijuegos.com/juego/big-pixel-pinball?gclid=Cj0KCQjw9fntBRCGARIsAGj
 
 ## Controls
 
-- ? / ?: Flipper Left / Flipper Right
-- ? : Kicker
+- Left Arrow / Right Arrow: Flipper Left / Flipper Right
+- Down Arrow : Kicker
+- R: If you end the game, restart level.
 
 ### Debug
 
