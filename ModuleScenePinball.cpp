@@ -6,6 +6,7 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
+#include"ModuleUI.h"
 
 ModuleScenePinball::ModuleScenePinball(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -26,18 +27,25 @@ bool ModuleScenePinball::Start()
 	App->renderer->camera.x =  0;
 	App->renderer->camera.y = -673; //Magic number
 
+
+	ball = App->physics->CreateCircle(592, 845, 15, b2_dynamicBody);
+
+
 	Map_shape();
 	Flippers();
+	Spring();
+	
+
 
 	background = App->textures->Load("Textures/background.png");
-	ball = App->textures->Load("Textures/ball.png");
+	ball_tex = App->textures->Load("Textures/ball.png");
 	flipper_right_tex = App->textures->Load("Textures/Flipper_Right.png");
 	flipper_left_tex = App->textures->Load("Textures/Flipper_Left.png");
-	//--------------------------------
+	spring_tex = App->textures->Load("Textures/Spring.png");
 
-	//--------------------------------
-	Soundtrack[0] = App->audio->LoadFx("Audio/MainTheme.wav");
-	//Soundtrack[1] = App->audio->LoadFx("Audio/MenuTheme.wav");
+
+
+	Soundtrack = App->audio->LoadFx("Audio/MainTheme.wav");
 	launcher_fx = App->audio->LoadFx("Audio/Launcher_fx.wav");
 	flipper_fx = App->audio->LoadFx("Audio/Flipper_fx.wav");
 
@@ -58,14 +66,28 @@ bool ModuleScenePinball::CleanUp()
 update_status ModuleScenePinball::Update()
 {
 	App->renderer->Blit(background, 0, 0);
+	
+	static int force = 0;
+	static int elastic_force = 1;
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) {
+		force += 20;
+		if (force > 380)
+			force = 380;
+		if(spring_y<1029)
+			++spring_y;
+		//prismaticJoint_spring.lowerTranslation -= PIXEL_TO_METERS(elastic_force);
+		//prismaticJoint_spring.upperTranslation -= PIXEL_TO_METERS(elastic_force);
 
-	if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
-	{
-
+	}
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
+		spring->body->ApplyForceToCenter(b2Vec2(0, -force), 1);
+		spring_y = 1023;
+		App->audio->PlayFx(launcher_fx);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	{
 		flipper_right_body->body->ApplyTorque(100, true);
+		App->audio->PlayFx(flipper_fx);
 	}
 	else
 	{
@@ -74,6 +96,7 @@ update_status ModuleScenePinball::Update()
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 	{
 		flipper_left_body->body->ApplyTorque(-100, true);
+		App->audio->PlayFx(flipper_fx);
 	}
 	else
 	{
@@ -85,7 +108,7 @@ update_status ModuleScenePinball::Update()
 		//circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
 		//circles.getLast()->data->listener = this;
 
-		balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 15, b2_dynamicBody));
+		balls.add(App->physics->CreateCircle(592, 845, 15, b2_dynamicBody));
 		balls.getLast()->data->listener = this;
 	}
 
@@ -95,14 +118,13 @@ update_status ModuleScenePinball::Update()
 	// All draw functions ------------------------------------------------------
 	p2List_item<PhysBody*>* b = balls.getFirst();
 
-	while(b != NULL)
-	{
-		int x, y;
-		b->data->GetPosition(x, y);
-		if(b->data->Contains(App->input->GetMouseX(), App->input->GetMouseY()))
-			App->renderer->Blit(ball, x, y, NULL, 1.0f, b->data->GetRotation());
-		b = b->next;
-	}
+	//while(b != NULL)
+	//{
+	//	int x, y;
+	//	b->data->GetPosition(x, y);
+	//	App->renderer->Blit(ball_tex, x, y, NULL, 1.0f);
+	//	b = b->next;
+	//}
 
 	b = boxes.getFirst();
 
@@ -123,13 +145,32 @@ update_status ModuleScenePinball::Update()
 		App->renderer->Blit(rick, x, y, NULL, 1.0f, b->data->GetRotation());
 		b = b->next;
 	}
+	
+	//CAMERA--------------------------
+	
+	ball->GetPosition(ball_x, ball_y);
+	App->renderer->Blit(ball_tex, ball_x, ball_y, NULL, 1.0f);
 
+	App->renderer->camera.y = -ball_y + (App->renderer->camera.h / 2);
+	if (App->renderer->camera.y < -673)
+	{
+		App->renderer->camera.y = -673;
+	}
+	else if (App->renderer->camera.y > 0)
+	{
+		App->renderer->camera.y = 0;
+	}
+	//------------------------------------
+	Ball_respawn();
+	App->renderer->Blit(spring_tex, 585, spring_y);
 	
 	flipper_left_body->GetPosition(x, y);
 	App->renderer->Blit(flipper_left_tex, x, y, NULL, 1.0f, flipper_left_body->GetRotation(), 0, 0);
 
 	flipper_right_body->GetPosition(x, y);
 	App->renderer->Blit(flipper_right_tex, x, y, NULL, 1.0f, flipper_right_body->GetRotation(), 0, 0);
+
+	App->audio->PlayMusic("Audio/MainTheme.wav", -1.0f);
 	return UPDATE_CONTINUE;
 }
 
@@ -202,6 +243,31 @@ void ModuleScenePinball::Flippers()
 	left_flipper_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&revoluteJointDef_left);
 
 }
+void ModuleScenePinball::Spring()
+{
+
+	spring = App->physics->CreateRectangle(592, 850, 30, 15);
+	staticSpring = App->physics->CreateRectangle(592, 1150, 30, 15);
+	staticSpring->body->SetType(b2_staticBody);
+
+	prismaticJoint_spring.bodyB = spring->body;
+	prismaticJoint_spring.bodyA = staticSpring->body;
+
+
+	prismaticJoint_spring.collideConnected = false;
+	prismaticJoint_spring.enableLimit = true;
+
+	prismaticJoint_spring.lowerTranslation = PIXEL_TO_METERS(112);
+	prismaticJoint_spring.upperTranslation = PIXEL_TO_METERS(140);
+
+	prismaticJoint_spring.localAnchorA.Set(0, 0);
+	prismaticJoint_spring.localAnchorB.Set(0, 0);
+
+
+	prismaticJoint_spring.localAxisA.Set(0, -1);
+
+	b2PrismaticJoint* joint_spring = (b2PrismaticJoint*)App->physics->world->CreateJoint(&prismaticJoint_spring);
+}
 
 void ModuleScenePinball::Map_shape()
 {
@@ -213,8 +279,26 @@ void ModuleScenePinball::Map_shape()
 	}
 	chains.clear();
 
-	
+	chains.add(App->physics->CreateChain(0, 0, Background, 90,b2_staticBody));
+	chains.add(App->physics->CreateChain(0, 0, ShapeL1, 12, b2_staticBody));
+	chains.add(App->physics->CreateChain(0, 0, ShapeR1, 12, b2_staticBody));
+	chains.add(App->physics->CreateChain(0, 0, ShapeR2, 12, b2_staticBody));
+	//chains.add(App->physics->CreateChain(0, 0, ShapeL2, 12, b2_staticBody));
+	chains.add(App->physics->CreateChain(0, 0, SpinTube, 48, b2_staticBody));
+	chains.add(App->physics->CreateChain(0, 0, Start_Tube, 22, b2_staticBody));
+}
 
-	chains.add(App->physics->CreateChain(0, 0, Background, 82,b2_staticBody));
+void ModuleScenePinball::Ball_respawn()
+{
+
+	if (ball_y > 1400 && App->UI->num_balls > 0)
+	{
+
+		ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(592), PIXEL_TO_METERS( 845)), 0);	
+		ball->body->SetAngularVelocity(0);
+		ball->body->SetLinearVelocity(b2Vec2(0, 0));
+		--App->UI->num_balls;
+		
+	}
 }
 

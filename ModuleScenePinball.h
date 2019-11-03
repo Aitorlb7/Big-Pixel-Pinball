@@ -19,28 +19,34 @@ public:
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 	void Map_shape();
 	void Flippers();
+	void Spring();
+	void Ball_respawn();
 
 public:
 	int x = 0;
 	int y = 0;
+	int spring_y = 1023;
+	int ball_x = 0;
+	int ball_y = 0;
+	int numBalls = 0;
+	
 	
 	p2List<PhysBody*> circles;
 	p2List<PhysBody*> boxes;
 	p2List<PhysBody*> chains;
 
-
-	PhysBody* right;
-	PhysBody* point_right;
-	PhysBody* left;
-	PhysBody* point_left;
+	PhysBody* ball;
+	PhysBody* spring;
 	PhysBody* left_flipper_joint;
 	PhysBody* right_flipper_joint;
+	PhysBody* staticSpring;
 	PhysBody* flipper_right_body = new PhysBody();
 	PhysBody* flipper_left_body = new PhysBody();
 	b2RevoluteJointDef revoluteJointDef_right;
 	b2RevoluteJointDef revoluteJointDef_left;
+	b2PrismaticJointDef prismaticJoint_spring;
 
-
+	
 
 
 	PhysBody* launcher;
@@ -54,23 +60,21 @@ public:
 	SDL_Texture* box;
 	SDL_Texture* rick;
 
-	SDL_Texture* ball;
+	SDL_Texture* ball_tex;
 	SDL_Texture* background;
 	SDL_Texture* flipper_right_tex;
 	SDL_Texture* flipper_left_tex;
+	SDL_Texture* spring_tex;
 
 
 
 	uint bonus_fx;
-	uint Soundtrack[2];
+	uint Soundtrack;
 	uint launcher_fx;
 	uint flipper_fx;
+
 	p2Point<int> ray;
 	bool ray_on;
-
-
-
-
 	
 	int Flipper_Left[18] = {
 	0, 10,
@@ -95,12 +99,13 @@ public:
 	60, 2,
 	47, 2
 	};
-	int Background[82] = {
-	630, 1207,
-	622, 815,
-	595, 764,
-	571, 744,
-	549, 731,
+	int Background[90] = {
+	617, 1207,
+	614, 856,
+	605, 819,
+	577, 777,
+	536, 740,
+	536, 727,
 	613, 633,
 	617, 263,
 	608, 225,
@@ -119,6 +124,7 @@ public:
 	352, 227,
 	311, 153,
 	266, 124,
+	257, 85,
 	227, 47,
 	180, 27,
 	113, 29,
@@ -131,11 +137,88 @@ public:
 	73, 826,
 	37, 836,
 	43, 1080,
-	199, 1172,
-	199, 1435,
-	393, 1443,
-	405, 1173,
-	562, 1077,
-	560, 1233
+	208, 1175,
+	200, 1435,
+	396, 1436,
+	408, 1175,
+	447, 1147,
+	560, 1083,
+	560, 1287,
+	628, 1288
+	};
+	int ShapeR1[12] = {
+	411, 1104,
+	407, 1074,
+	505, 1020,
+	520, 990,
+	525, 1025,
+	503, 1057
+	};
+	int ShapeL1[12] = {
+	196, 1074,
+	193, 1105,
+	98, 1055,
+	82, 1024,
+	85, 986,
+	101, 1018
+	};
+
+
+	int ShapeR2[12] = {
+		408, 980,
+		464, 879,
+		480, 883,
+		476, 958,
+		419, 988,
+		408, 981
+	};
+
+	int ShapeL2[12] = {
+		135, 958,
+		129, 885,
+		143, 879,
+		201, 978,
+		192, 987,
+		135, 958
+	};
+
+	int Start_Tube[22] = {
+	565, 1204,
+	564, 876,
+	548, 824,
+	523, 795,
+	510, 785,
+	515, 778,
+	529, 784,
+	557, 814,
+	572, 840,
+	578, 874,
+	580, 1207
+	};
+	int SpinTube[48] = {
+	119, 833,
+	118, 706,
+	93, 668,
+	86, 171,
+	89, 110,
+	110, 79,
+	153, 60,
+	178, 66,
+	190, 77,
+	199, 122,
+	184, 161,
+	179, 172,
+	156, 140,
+	138, 116,
+	107, 127,
+	130, 204,
+	96, 299,
+	103, 472,
+	130, 526,
+	113, 541,
+	135, 594,
+	102, 661,
+	125, 700,
+	130, 832
 	};
 };
