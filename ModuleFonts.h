@@ -22,9 +22,9 @@ public:
 
 	ModuleFonts(Application* app, bool start_enabled = true);
 	~ModuleFonts();
-	int Load(const char* texture_path, const char* characters, SDL_Rect &P, uint rows = 1);
+	int Load(const char* texture_path, const char* characters, uint rows = 1);
 	void UnLoad(int font_id);
-	void BlitText(int x, int y, int bmp_font_id, const char* text, SDL_Rect &P) const;
+	void BlitText(int x, int y, int bmp_font_id, const char* text) const;
 
 private:
 

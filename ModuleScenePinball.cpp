@@ -24,7 +24,7 @@ bool ModuleScenePinball::Start()
 	bool ret = true;
 
 	App->renderer->camera.x =  0;
-	App->renderer->camera.y = -673; //Magic number
+	App->renderer->camera.y = -0; //Magic number
 	
 	
 	//circle = App->textures->Load("pinball/wheel.png"); 
@@ -205,13 +205,13 @@ void ModuleScenePinball::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 void Map_shape()
 {
-	/*p2List_item<PhysBody*>* temp = ricks.getFirst();
-	while (temp != NULL) {
-		b2Body* body = temp->data->body;
-		temp->data->body->GetWorld()->DestroyBody(body);
-		temp = temp->next;
-	}
-	ricks.clear();*/
+	//p2List_item<PhysBody*>* temp = ricks.getFirst();
+	//while (temp != NULL) {
+	//	b2Body* body = temp->data->body;
+	//	temp->data->body->GetWorld()->DestroyBody(body);
+	//	temp = temp->next;
+	//}
+	//ricks.clear();
 
 	int Background[148] = {
 	640, 767,
