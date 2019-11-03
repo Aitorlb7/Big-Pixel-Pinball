@@ -21,6 +21,8 @@ public:
 	SDL_Rect Scorerect2;
 	SDL_Rect Inforect;
 
+	SDL_Rect _100Rect;
+
 	int font_start = -1;
 
 	int score = 0;

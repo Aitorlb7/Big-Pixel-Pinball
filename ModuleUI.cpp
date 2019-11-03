@@ -15,6 +15,7 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	Scorerect1 = {14,528, 116, 16};
 	Scorerect2 = {14,543, 116, 16};
 	Inforect = { 152,486, 340, 35 };
+	_100Rect = {213,5,67,24};
 
 }
 ModuleUI::~ModuleUI()
@@ -64,7 +65,7 @@ update_status ModuleUI::Update()
 	App->renderer->Blit(graphics, 0, y, &Banner);
 	App->fonts->BlitText(5, y + 23, 0, std::to_string(score).c_str());
 	App->fonts->BlitText(540, y + 23, 0, std::to_string(num_balls).c_str());
-	if (num_balls <= 0)
+	if (num_balls < 1)
 	{
 		App->renderer->DrawQuad({ 170, y + 200, 300, 150 }, 0, 0, 0, 240, true, true);
 		App->renderer->Blit(graphics, 190, y + 220, &Scorerect1);
