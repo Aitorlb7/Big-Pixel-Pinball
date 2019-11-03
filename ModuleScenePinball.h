@@ -3,6 +3,7 @@
 #include "p2List.h"
 #include "p2Point.h"
 #include "Globals.h"
+#include "ModulePhysics.h"
 
 class PhysBody;
 
@@ -21,20 +22,20 @@ public:
 public:
 	p2List<PhysBody*> circles;
 	p2List<PhysBody*> boxes;
-	p2List<PhysBody*> ricks;
+	p2List<PhysBody*> chains;
 
-	PhysBody* flipper_right1;
-	PhysBody* point_right1;	
-	PhysBody* flipper_right2;
-	PhysBody* point_right2;	
-	PhysBody* flipper_right3;
-	PhysBody* point_right3;
-	PhysBody* flipper_left1;
-	PhysBody* point_left1;
-	PhysBody* flipper_left2;
-	PhysBody* point_left2;	
-	PhysBody* flipper_left3;
-	PhysBody* point_left3;
+
+	PhysBody* right;
+	PhysBody* point_right;
+	PhysBody* left;
+	PhysBody* point_left;
+	PhysBody* left_flipper_joint;
+	PhysBody* right_flipper_joint;
+	b2RevoluteJointDef revoluteJointDef_right;
+	b2RevoluteJointDef revoluteJointDef_left;
+
+
+
 
 	PhysBody* launcher;
 
@@ -49,6 +50,10 @@ public:
 
 	SDL_Texture* ball;
 	SDL_Texture* background;
+	SDL_Texture* flipper_right_tex;
+	SDL_Texture* flipper_left_tex;
+
+	PhysBody* flipper_right_body = new PhysBody();
 
 
 	uint bonus_fx;

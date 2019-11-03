@@ -25,16 +25,77 @@ bool ModuleScenePinball::Start()
 
 	App->renderer->camera.x =  0;
 	App->renderer->camera.y = -0; //Magic number
+
+	Map_shape();
 	
-	
-	//circle = App->textures->Load("pinball/wheel.png"); 
-	//box = App->textures->Load("pinball/crate.png");
-	//rick = App->textures->Load("pinball/rick_head.png");
-	//bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 
 	background = App->textures->Load("Textures/background.png");
 	ball = App->textures->Load("Textures/ball.png");
+	flipper_right_tex = App->textures->Load("Textures/Flipper_Right.png");
 
+	//--------------------------------
+	int Flipper_Right[20] = {
+	47, 2,
+	0, 46,
+	0, 55,
+	4, 62,
+	11, 62,
+	67, 30,
+	70, 23,
+	68, 10,
+	60, 2,
+	47, 2
+	};
+	
+	
+	b2BodyDef body;
+	body.type = b2_dynamicBody;
+	//body.position.Set(PIXEL_TO_METERS(300), PIXEL_TO_METERS(560));
+
+	b2Body* b =  App->physics->world->CreateBody(&body);
+	b2PolygonShape box;
+
+	b2Vec2* p = new b2Vec2[17/2];
+
+	for (uint i = 0; i < 17 / 2; ++i)
+	{
+		p[i].x = PIXEL_TO_METERS(Flipper_Right[i * 2 + 0]);
+		p[i].y = PIXEL_TO_METERS(Flipper_Right[i * 2 + 1]);
+	}
+
+	box.Set(p, 17 / 2);
+
+	b2FixtureDef fixture;
+	fixture.shape = &box;
+	fixture.density = 1.0f;
+	fixture.restitution = 0.2f;
+
+	b->CreateFixture(&fixture);
+
+	
+	flipper_right_body->body = b;
+	b->SetUserData(flipper_right_body);
+	flipper_right_body->height = flipper_right_body->width = 0;
+
+	//--------------------------------
+	right_flipper_joint = App->physics->CreateCircle(215, 582, 2, b2_staticBody);
+
+	b2RevoluteJointDef revoluteJointDef_right;
+	revoluteJointDef_right.bodyA = right_flipper_joint->body;
+	revoluteJointDef_right.bodyB = flipper_right_body->body;
+	revoluteJointDef_right.collideConnected = false;
+
+	revoluteJointDef_right.enableLimit = true;
+	revoluteJointDef_right.lowerAngle = -25 * DEGTORAD;
+	revoluteJointDef_right.upperAngle = 25 * DEGTORAD;
+
+	revoluteJointDef_right.localAnchorA.Set(PIXEL_TO_METERS(0), PIXEL_TO_METERS(0));
+	revoluteJointDef_right.localAnchorB.Set(PIXEL_TO_METERS(10), PIXEL_TO_METERS(15));
+
+	b2RevoluteJoint* right_flipper_joint;
+	right_flipper_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&revoluteJointDef_right);
+
+	//--------------------------------
 	Soundtrack[0] = App->audio->LoadFx("Audio/MainTheme.wav");
 	//Soundtrack[1] = App->audio->LoadFx("Audio/MenuTheme.wav");
 	launcher_fx = App->audio->LoadFx("Audio/Launcher_fx.wav");
@@ -56,11 +117,24 @@ bool ModuleScenePinball::CleanUp()
 // Update: draw background
 update_status ModuleScenePinball::Update()
 {
+	App->renderer->Blit(background, 0, 0);
+
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		ray_on = !ray_on;
-		ray.x = App->input->GetMouseX();
-		ray.y = App->input->GetMouseY();
+
+	}
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN)
+	{
+		//App->audio->PlayFx(flipper_sound, 0);
+		flipper_right_body->body->ApplyTorque(300, true);
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+	{
+		flipper_right_body->body->ApplyTorque(100, true);
+	}
+	else
+	{
+		flipper_right_body->body->ApplyTorque(-50, true);
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
@@ -68,67 +142,14 @@ update_status ModuleScenePinball::Update()
 		//circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
 		//circles.getLast()->data->listener = this;
 
-		balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 15));
+		balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 15, b2_dynamicBody));
 		balls.getLast()->data->listener = this;
-	}
-
-	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-	{
-		boxes.add(App->physics->CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 100, 50));
-	}
-
-	if(App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-	{
-		// Pivot 0, 0
-		int rick_head[64] = {
-			14, 36,
-			42, 40,
-			40, 0,
-			75, 30,
-			88, 4,
-			94, 39,
-			111, 36,
-			104, 58,
-			107, 62,
-			117, 67,
-			109, 73,
-			110, 85,
-			106, 91,
-			109, 99,
-			103, 104,
-			100, 115,
-			106, 121,
-			103, 125,
-			98, 126,
-			95, 137,
-			83, 147,
-			67, 147,
-			53, 140,
-			46, 132,
-			34, 136,
-			38, 126,
-			23, 123,
-			30, 114,
-			10, 102,
-			29, 90,
-			0, 75,
-			30, 62
-		};
-
-		ricks.add(App->physics->CreateChain(App->input->GetMouseX(), App->input->GetMouseY(), rick_head, 64));
 	}
 
 	// Prepare for raycast ------------------------------------------------------
 	
-	iPoint mouse;
-	mouse.x = App->input->GetMouseX();
-	mouse.y = App->input->GetMouseY();
-	int ray_hit = ray.DistanceTo(mouse);
-
-	fVector normal(0.0f, 0.0f);
 
 	// All draw functions ------------------------------------------------------
-	//p2List_item<PhysBody*>* b = circles.getFirst();
 	p2List_item<PhysBody*>* b = balls.getFirst();
 
 	while(b != NULL)
@@ -147,16 +168,10 @@ update_status ModuleScenePinball::Update()
 		int x, y;
 		b->data->GetPosition(x, y);
 		App->renderer->Blit(box, x, y, NULL, 1.0f, b->data->GetRotation());
-		if(ray_on)
-		{
-			int hit = b->data->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);
-			if(hit >= 0)
-				ray_hit = hit;
-		}
 		b = b->next;
 	}
 
-	b = ricks.getFirst();
+	b = chains.getFirst();
 
 	while(b != NULL)
 	{
@@ -166,20 +181,8 @@ update_status ModuleScenePinball::Update()
 		b = b->next;
 	}
 
-	// ray -----------------
-	if(ray_on == true)
-	{
-		fVector destination(mouse.x-ray.x, mouse.y-ray.y);
-		destination.Normalize();
-		destination *= ray_hit;
 
-		App->renderer->DrawLine(ray.x, ray.y, ray.x + destination.x, ray.y + destination.y, 255, 255, 255);
-
-		if(normal.x != 0.0f)
-			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
-	}
-	App->renderer->Blit(background, 0, 0);
-
+	App->renderer->Blit(flipper_right_tex, 100, 100, NULL, 1.0f, flipper_right_body->GetRotation(), 55, 10);
 	return UPDATE_CONTINUE;
 }
 
@@ -203,90 +206,59 @@ void ModuleScenePinball::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	}*/
 }
 
-void Map_shape()
+void ModuleScenePinball::Map_shape()
 {
-	//p2List_item<PhysBody*>* temp = ricks.getFirst();
-	//while (temp != NULL) {
-	//	b2Body* body = temp->data->body;
-	//	temp->data->body->GetWorld()->DestroyBody(body);
-	//	temp = temp->next;
-	//}
-	//ricks.clear();
+	p2List_item<PhysBody*>* temp = chains.getFirst();
+	while (temp != NULL) {
+		b2Body* body = temp->data->body;
+		temp->data->body->GetWorld()->DestroyBody(body);
+		temp = temp->next;
+	}
+	chains.clear();
 
-	int Background[148] = {
-	640, 767,
-	559, 739,
-	556, 733,
-	558, 727,
-	581, 686,
-	566, 676,
-	564, 672,
-	565, 667,
-	606, 592,
-	602, 590,
-	601, 549,
-	612, 549,
-	611, 358,
-	603, 357,
-	603, 314,
-	611, 313,
-	611, 81,
-	605, 88,
-	592, 78,
-	585, 84,
-	552, 56,
-	555, 48,
-	546, 39,
-	555, 29,
-	426, 31,
-	412, 45,
-	418, 56,
-	385, 84,
-	374, 73,
-	355, 90,
-	352, 178,
-	342, 190,
-	331, 186,
-	316, 156,
-	274, 136,
-	263, 126,
-	259, 98,
-	246, 75,
-	224, 52,
-	183, 33,
-	164, 29,
-	146, 28,
-	126, 31,
-	110, 37,
-	95, 45,
-	83, 54,
-	69, 69,
-	55, 95,
-	50, 122,
-	50, 157,
-	50, 653,
-	55, 679,
-	62, 694,
-	74, 709,
-	82, 722,
-	82, 742,
-	82, 833,
-	75, 836,
-	61, 833,
-	42, 834,
-	41, 1079,
-	48, 1078,
-	58, 1083,
-	194, 1157,
-	211, 1173,
-	205, 1361,
-	380, 1357,
-	400, 1173,
-	421, 1155,
-	562, 1078,
-	563, 1176,
-	633, 1173,
-	640, 773,
-	669, 272
+	
+	int Background[82] = {
+	630, 1207,
+	622, 815,
+	595, 764,
+	571, 744,
+	549, 731,
+	613, 633,
+	617, 263,
+	608, 225,
+	565, 250,
+	552, 237,
+	597, 210,
+	613, 181,
+	610, 80,
+	548, 30,
+	417, 30,
+	363, 77,
+	355, 177,
+	363, 205,
+	407, 233,
+	398, 254,
+	352, 227,
+	311, 153,
+	266, 124,
+	227, 47,
+	180, 27,
+	113, 29,
+	78, 53,
+	50, 92,
+	45, 132,
+	45, 655,
+	56, 691,
+	67, 718,
+	73, 826,
+	37, 836,
+	43, 1080,
+	199, 1172,
+	199, 1435,
+	393, 1443,
+	405, 1173,
+	562, 1077,
+	560, 1233
 	};
+	chains.add(App->physics->CreateChain(0, 0, Background, 82,b2_staticBody));
 }
