@@ -6,6 +6,7 @@
 #include "ModuleRender.h"
 #include "ModuleFonts.h"
 #include "ModulePlayer.h"
+#include "ModuleScenePinball.h"
 #include "SDL/include/SDL.h"
 #include <string>
 
@@ -65,7 +66,7 @@ update_status ModuleUI::Update()
 	App->renderer->Blit(graphics, 0, y, &Banner);
 	App->fonts->BlitText(5, y + 23, 0, std::to_string(score).c_str());
 	App->fonts->BlitText(540, y + 23, 0, std::to_string(num_balls).c_str());
-	if (num_balls < 1)
+	if (num_balls < 1 && App->scene_pinball->ball_y > 1400)
 	{
 		App->renderer->DrawQuad({ 170, y + 200, 300, 150 }, 0, 0, 0, 240, true, true);
 		App->renderer->Blit(graphics, 190, y + 220, &Scorerect1);

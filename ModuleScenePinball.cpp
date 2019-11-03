@@ -47,7 +47,7 @@ bool ModuleScenePinball::Start()
 	sensor_red_tex = App->textures->Load("Textures/Red_Active.png");
 	sensor_pink_tex = App->textures->Load("Textures/Pink_Active.png");
 	sensor_yellow_tex = App->textures->Load("Textures/Yellow_Active.png");
-	plus100 = App->textures->Load("Textures/_100.png");
+
 
 
 	App->audio->PlayMusic("Audio/MainTheme.wav", -1.0f);
@@ -86,6 +86,9 @@ update_status ModuleScenePinball::Update()
 	
 	static int force = 0;
 	static int elastic_force = 1;
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
+		ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY())), 0);
+	}
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) {
 		force += 20;
 		if (force > 380)
@@ -187,13 +190,15 @@ update_status ModuleScenePinball::Update()
 	if (blit_yellow)
 		App->renderer->Blit(sensor_yellow_tex, 142, 699);
 
-	y100 -= sensed_timer / 20;
+	y100 -= sensed_timer / 40;
 	if (sensed_timer < 120)
 		App->renderer->Blit(plus100, x100, y100);
 	if (sensed_timer > 120)
 	{
 		start_timer = false;
 		sensed_timer = 0;
+		App->textures->Unload(plus100);
+		plus100 = nullptr;
 	}
 
 	App->renderer->Blit(ball_tex, ball_x, ball_y, NULL, 1.0f);
@@ -320,7 +325,7 @@ void ModuleScenePinball::Map_shape()
 void ModuleScenePinball::Ball_respawn()
 {
 
-	if (ball_y > 1400 && App->UI->num_balls > 0)
+	if (ball_y > 1400 && App->UI->num_balls >= 1)
 	{
 
 		ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(592), PIXEL_TO_METERS( 845)), 0);	
@@ -386,6 +391,7 @@ void ModuleScenePinball::Sensed()
 }
 void ModuleScenePinball::Create100(int x, int y)
 {
+	plus100 = App->textures->Load("Textures/_100.png");
 	x100 = x;
 	y100 = y;
 	start_timer = true;
