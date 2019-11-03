@@ -86,6 +86,9 @@ update_status ModuleScenePinball::Update()
 	
 	static int force = 0;
 	static int elastic_force = 1;
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
+		ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY())), 0);
+	}
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) {
 		force += 20;
 		if (force > 380)
