@@ -335,6 +335,32 @@ void ModuleScenePinball::Sensed()
 		Create100(x, y);
 		orange_sensed = !orange_sensed;
 	}
+	if (pink_sensed)
+	{
+		App->UI->score += 100;
+		blit_pink = true;
+		ball->GetPosition(x, y);
+		Create100(x, y);
+		pink_sensed = !pink_sensed;
+	}
+	if (yellow_sensed)
+	{
+		App->UI->score += 100;
+		blit_yellow = true;
+		ball->GetPosition(x, y);
+		Create100(x, y);
+		yellow_sensed = !yellow_sensed;
+	}
+	if (red_sensed)
+	{
+		App->UI->score += 100;
+		blit_red = true;
+		ball->GetPosition(x, y);
+		Create100(x, y);
+		red_sensed = !red_sensed;
+	}
+
+
 }
 void ModuleScenePinball::Create100(int x, int y)
 {
