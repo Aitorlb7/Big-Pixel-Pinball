@@ -19,6 +19,7 @@ public:
 	SDL_Rect Banner;
 	SDL_Rect Scorerect1;
 	SDL_Rect Scorerect2;
+	SDL_Rect Inforect;
 
 	int font_start = -1;
 
