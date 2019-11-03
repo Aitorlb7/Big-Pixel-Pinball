@@ -22,10 +22,12 @@ public:
 	void Spring();
 	void Ball_respawn();
 	void Sensed();
+	void Create100(int x, int y);
 
 public:
 	int sensed_timer;
-	
+	bool start_timer;
+
 	int x = 0;
 	int y = 0;
 	int spring_y = 1023;
@@ -90,6 +92,9 @@ public:
 	SDL_Texture* sensor_pink_tex;
 	SDL_Texture* sensor_red_tex;
 	SDL_Texture* sensor_yellow_tex;
+	SDL_Texture* sensor_green_tex;
+	SDL_Texture* plus100;
+
 
 	uint bonus_fx;
 	uint Soundtrack;

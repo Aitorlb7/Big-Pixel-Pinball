@@ -44,7 +44,7 @@ bool ModuleScenePinball::Start()
 	sensor_blue_tex = App->textures->Load("Textures/Blue_Active.png");
 	sensor_orange_tex = App->textures->Load("Textures/Orange_Active.png");
 	sensor_green_tex = App->textures->Load("Textures/Green_Active.png");
-	
+	plus100 = App->textures->Load("Textures/_100.png");
 
 
 
@@ -75,7 +75,8 @@ bool ModuleScenePinball::CleanUp()
 // Update: draw background
 update_status ModuleScenePinball::Update()
 {
-	
+	if (start_timer)
+		sensed_timer++;
 	Sensed();
 	App->renderer->Blit(background, 0, 0);
 	
@@ -309,23 +310,38 @@ void ModuleScenePinball::Ball_respawn()
 }
 void ModuleScenePinball::Sensed()
 {
+	
 	if (blue_sensed)
 	{
 		App->UI->score += 100;
 		blit_blue = true;
+		ball->GetPosition(x, y);
+		Create100(x, y);
 		blue_sensed = !blue_sensed;
 	}
 	if (green_sensed)
 	{
 		App->UI->score += 100;
 		blit_green = true;
+		ball->GetPosition(x, y);
+		Create100(x, y);
 		green_sensed = !green_sensed;
 	}
 	if (orange_sensed)
 	{
 		App->UI->score += 100;
 		blit_orange = true;
+		ball->GetPosition(x, y);
+		Create100(x, y);
 		orange_sensed = !orange_sensed;
+	}
+}
+void ModuleScenePinball::Create100(int x, int y)
+{
+	start_timer = true;
+	if(sensed_timer > 60)
+	{
+		
 	}
 }
 
