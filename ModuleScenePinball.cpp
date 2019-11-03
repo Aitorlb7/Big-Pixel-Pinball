@@ -44,10 +44,10 @@ bool ModuleScenePinball::Start()
 	sensor_blue_tex = App->textures->Load("Textures/Blue_Active.png");
 	sensor_orange_tex = App->textures->Load("Textures/Orange_Active.png");
 	sensor_green_tex = App->textures->Load("Textures/Green_Active.png");
+	sensor_red_tex = App->textures->Load("Textures/Red_Active.png");
+	sensor_pink_tex = App->textures->Load("Textures/Pink_Active.png");
+	sensor_yellow_tex = App->textures->Load("Textures/Yellow_Active.png");
 	plus100 = App->textures->Load("Textures/_100.png");
-
-
-
 
 
 	App->audio->PlayMusic("Audio/MainTheme.wav", -1.0f);
@@ -58,6 +58,10 @@ bool ModuleScenePinball::Start()
 	sensor_blue = App->physics->CreateRectangleSensor(237, 913, 60, 60);
 	sensor_orange = App->physics->CreateRectangleSensor(310, 1035, 60, 60);
 	sensor_green = App->physics->CreateRectangleSensor(380, 913, 60, 60);
+	sensor_pink = App->physics->CreateRectangleSensor(320, 690, 60, 60);
+	sensor_red = App->physics->CreateRectangleSensor(450, 720, 60, 60);
+	sensor_yellow = App->physics->CreateRectangleSensor(170, 720, 60, 60);
+
 
 	
 
