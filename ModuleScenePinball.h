@@ -30,6 +30,8 @@ public:
 
 	int x = 0;
 	int y = 0;
+	int x100 = 0;
+	int y100 = 0;
 	int spring_y = 1023;
 	int ball_x = 0;
 	int ball_y = 0;
@@ -92,7 +94,6 @@ public:
 	SDL_Texture* sensor_pink_tex;
 	SDL_Texture* sensor_red_tex;
 	SDL_Texture* sensor_yellow_tex;
-	SDL_Texture* sensor_green_tex;
 	SDL_Texture* plus100;
 
 

@@ -174,6 +174,15 @@ update_status ModuleScenePinball::Update()
 	if (blit_orange)
 		App->renderer->Blit(sensor_orange_tex, 271, 1004);
 
+	y100 -= sensed_timer / 20;
+	if (sensed_timer < 120)
+		App->renderer->Blit(plus100, x100, y100);
+	if (sensed_timer > 120)
+	{
+		start_timer = false;
+		sensed_timer = 0;
+	}
+
 	App->renderer->Blit(ball_tex, ball_x, ball_y, NULL, 1.0f);
 
 	return UPDATE_CONTINUE;
@@ -364,10 +373,9 @@ void ModuleScenePinball::Sensed()
 }
 void ModuleScenePinball::Create100(int x, int y)
 {
+	x100 = x;
+	y100 = y;
 	start_timer = true;
-	if(sensed_timer > 60)
-	{
-		
-	}
+	
 }
 
